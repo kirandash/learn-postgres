@@ -1,0 +1,60 @@
+# Mastering PostgreSQL: Build Lightning-Fast, optimized, Scalable Databases
+
+## 1. Introduction
+
+## 2. Setup
+
+- Install postgres
+  - https://www.postgresql.org/download/
+  - https://postgresapp.com/ (Recommended)
+- PostgreSQL GUIs
+  - https://tableplus.com/download
+- psql cli: https://www.postgresql.org/docs/current/app-psql.html#:~:text=psql%20is%20a%20terminal%2Dbased,or%20from%20command%20line%20arguments.
+  - terminal-based front-end to PostgreSQL
+
+## 3. Postgres and Other Databases out there
+
+- Other DBs
+  - MySQL, SQLite
+- Benefits of using Postgres
+  - Extensibility
+  - Performance
+  - Powerful and feature rich
+  - Community support
+  - It is right tool for a lot of scenarios but not all
+- We wil focus on Postgres ex: full text search
+  - but in other scenarios such as real-time data, we might use other databases or elastic search etc.
+- We will cover in depth some use cases where Postgres shines but also where it doesn't
+
+## 4. psql cli
+
+- we are going to use tableplus mainly but feel free to use psql cli
+- make sure you have psql installed
+  - `psql --version`
+- connect to a database
+  - `psql -d master_postgres_demo`
+  - `psql -U kirandash -d master_postgres_demo`
+- list databases
+  - `\l`: this is the meta command
+  - alternatively, you can run SQL command: `SELECT datname FROM pg_database;`
+- create a database (not psql command, but SQL)
+  - `CREATE DATABASE master_postgres_demo;`
+- list tables
+  - `\dt`
+- help
+  - `\?`
+- quit
+  - `\q`
+- list users
+  - `\du`
+- describe 🔥
+  - \d
+  - describe table
+    - `\d kirantest_example1`
+- Expanded display 🔥
+  - `\x auto`
+  - to turn off: `\x`
+- Note: psqlrc file
+  - `~/.psqlrc`
+  - `psqlrc` is a configuration file that allows you to set defaults for your psql session
+  - https://wiki.postgresql.org/wiki/Psqlrc
