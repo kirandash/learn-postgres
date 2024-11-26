@@ -130,3 +130,31 @@
   - Storage: It uses 8 bytes of storage.
   - Range: -9223372036854775808 to +9223372036854775807 (-2^63 to 2^63 - 1)
   - Use case: It is used when you need to store large integers. Ex: phone number
+
+### 2.2 Fractional Data Types - Numeric
+
+- Integers are fast and efficient, but they are not suitable for storing fractional numbers because they are not precise
+  - ex: weather temperature today is 25.5 but we don't want to store the decimal then we can use integer
+- Floating point numbers are approximate and not precise
+  - Floating points are faster than numeric but they are not precise
+  - ex: currency prices, we need to be close but not exact
+- Numeric data types:
+
+  - used to store numbers with a fractional component
+  - Numeric data types are precise and accurate but they are slower and use more storage than the integer data types and floating point data types
+  - ex: research data, scientific data, financial data, etc.
+
+- Numeric
+  - https://neon.tech/postgresql/postgresql-tutorial/postgresql-numeric
+  - The NUMERIC (or DECIMAL) data type in PostgreSQL is highly flexible and can represent a virtually unlimited range of values, constrained only by the maximum precision and scale allowed by PostgreSQL.
+  - Range: -10^131072 to 10^131072
+  - Storage: variable
+  - argument: precision and scale
+    - precision: total number of digits
+    - scale: number of digits to the right of the decimal point
+    - ex: `NUMERIC(5, 2)` means 5 digits in total and 2 digits to the right of the decimal point
+      - ex: 123.45 or 12.34 will work but 1234.56 will not work because the total number of digits is 6 which is more than 5. another ex: 123.456 will not work because the number of digits to the right of the decimal point is 3 which is more than 2
+    - scale is optional
+      - ex: `NUMERIC(5)` means 5 digits in total and 0 digits to the right of the decimal point
+    - scale can be negative
+      - ex: `NUMERIC(5, -2)` means 5 digits in total and 2 digits to the left of the decimal point
