@@ -1,8 +1,10 @@
 # Mastering PostgreSQL: Build Lightning-Fast, optimized, Scalable Databases
 
-## 1. Introduction
+## 1. Introduction to PostgreSQL
 
-## 2. Setup
+### 1.1 Introduction
+
+### 1.2 Setup
 
 - Install postgres
   - https://www.postgresql.org/download/
@@ -12,7 +14,7 @@
 - psql cli: https://www.postgresql.org/docs/current/app-psql.html#:~:text=psql%20is%20a%20terminal%2Dbased,or%20from%20command%20line%20arguments.
   - terminal-based front-end to PostgreSQL
 
-## 3. Postgres and Other Databases out there
+### 1.3 Postgres and Other Databases out there
 
 - Other DBs
   - MySQL, SQLite
@@ -26,7 +28,7 @@
   - but in other scenarios such as real-time data, we might use other databases or elastic search etc.
 - We will cover in depth some use cases where Postgres shines but also where it doesn't
 
-## 4. psql cli
+### 1.4 psql cli
 
 - we are going to use tableplus mainly but feel free to use psql cli
 - make sure you have psql installed
@@ -59,7 +61,7 @@
   - `psqlrc` is a configuration file that allows you to set defaults for your psql session
   - https://wiki.postgresql.org/wiki/Psqlrc
 
-## 5. What is a PostgreSQL schema?
+### 1.5 What is a PostgreSQL schema?
 
 - In other databases ex: MySQL or SQLite you have a database and tables
 
@@ -83,7 +85,7 @@
       - and each database can have multiple schemas
         - and each schema can have multiple tables
 
-## 6. What is a Table Schema and Guidelines on defining it?
+### 1.6 What is a Table Schema and Guidelines on defining it?
 
 - Note that the PostgreSQL schema is different from the table schema
   - Table schema is the structure of the table
@@ -98,3 +100,33 @@
       - but it is Mainly to make sure the bounds and indexes etc are correctly applied and postgres has a lot of utilities that might be helpful based on the data type
         - ex: postgres has uuid data type, jsonb data type, etc. so use them rather than using text or varchar
       - it will help with DX and also with indexing and performance etc.
+
+### 1.8 TablePlus
+
+- TablePlus is a modern, native tool with an elegant UI that allows you to simultaneously manage multiple databases such as MySQL, PostgreSQL, SQLite, Microsoft SQL Server, Redis, and more.
+- I am going to use TablePlus in this course
+- I will be using the free version of TablePlus
+
+## 2. Understanding Data Types:
+
+### 2.1 Integer Data Types
+
+- Smallint or Int2
+
+  - Storage: It uses 2 bytes of storage.
+  - Range: -32768 to +32767 (-2^15 to 2^15 - 1)
+  - Use case: It is used when you need to store small integers. Ex: Age does not need INTEGER OR BIGINT
+  - In MySQL there is a concept of `UNSIGNED` or `SIGNED`. In Postgres, there is no such concept. So, you can store both positive and negative numbers or you can add a **check constraint** to make sure it is positive
+  - It sets the COMPACT data type for the data but it does not set the bounds. So, you can store any number in it. If you want to set the bounds, you can use `CHECK` constraint
+
+- Integer or Int4
+
+  - Storage: It uses 4 bytes of storage.
+  - Range: -2147483648 to +2147483647 (-2^31 to 2^31 - 1)
+  - Use case: It is used when you need to store integers. Ex: zipCode
+
+- Bigint or Int8
+
+  - Storage: It uses 8 bytes of storage.
+  - Range: -9223372036854775808 to +9223372036854775807 (-2^63 to 2^63 - 1)
+  - Use case: It is used when you need to store large integers. Ex: phone number
