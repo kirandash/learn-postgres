@@ -166,4 +166,23 @@
 
 -- DAY 2 --
 
-### 2.3 Floating Point Data Types
+### 2.3 Fractional Data Types - Floating Point (real, double precision)
+
+- https://www.postgresql.org/docs/current/datatype-numeric.html
+- supports fraction, not precise (approx) but fast
+- use case:
+  - weather, temperature, etc.
+- Real:
+  - Storage: 4 bytes (32 bits)
+  - Precision: 6 decimal digits precision
+  - ex: 123.456
+  - alias: float4
+  - Note: `FLOAT(p) Syntax` where if p is 1-24, then it is internally mapped to real i.e. 6 decimal digits precision
+- double precision:
+  - Storage: 8 bytes (64 bits)
+  - Precision: 15 decimal digits precision
+  - ex: 123.456789012345
+  - alias: float8
+  - Note: `FLOAT(p) Syntax` where if p is 25-53, then it is internally mapped to double precision i.e.e 15 decimal digits precision
+
+### 2.4 Compare speed of different data types
