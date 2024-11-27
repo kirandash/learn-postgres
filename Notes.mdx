@@ -195,7 +195,7 @@
   - It is not recommended to use the money data type as it defaults to USD
 - lc_monetary
   - The lc_monetary configuration parameter determines the currency symbol to be used by the to_char function when converting a money value to a string.
-  - ex: `SET lc_monetary TO 'en_US';`
+  - ex: `SET lc_monetary TO 'en_US.UTF-8';`
   - This only sets the currency symbol but does not automatically convert the number to the currency
 
 ### 2.6 Solutions to store money? (Recommended)
@@ -235,3 +235,16 @@
 - Use case for 'Infinity' to be stored in the database:
   - ex: in scenarios where you need to store a value that is greater than the maximum value that can be stored in the data type
   - ex if we are using real data type and if the value is greater than 3.4e38 then we can store it as 'Infinity'
+
+### 2.8 Casting types in PostgreSQL using cast fn or cast operator(::), `pg_typeof`, `pg_column_size`
+
+- https://neon.tech/postgresql/postgresql-tutorial/postgresql-cast
+- cast is a function that converts a value of one data type to another
+- use `cast` fn if you want portability or want to change to another database in the future
+  - ex: `SELECT cast(98765 as money);`
+- use `::` operator if you want to use the native syntax of Postgres
+  - ex: `SELECT 98765::money;`
+- `pg_typeof` is a function that returns the data type of the argument
+- My recommendation is to use `::` operator as it is more readable and concise
+- But if you are a developer who develops for multiple databases then you might want to use `cast` fn
+- `pg_column_size` is a function that returns the size of the argument in bytes
