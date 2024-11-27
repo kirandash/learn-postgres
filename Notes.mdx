@@ -215,3 +215,23 @@
 
 - store currency identifier in a new column along with the amount
   - ex: currency: USD, amount: 100.00
+
+### 2.7 Infinity and NaN values for different data types (Rarely used)
+
+- Theory:
+
+  - numeric data type allows 'NaN' and 'Infinity' value but 'Infinity' will not be allowed if we set numeric bound ex: numeric(5,4)
+  - integer does not allow 'NaN' or 'Infinity' value
+  - real data type allows 'NaN' and 'Infinity' value
+  - double precision data type allows 'NaN' and 'Infinity' value
+  - Note: 'Inf' is also allowed as 'Infinity'
+  - '-inf' is also allowed as '-Infinity'
+
+- Use case for 'NaN' to be stored in the database:
+
+  - ex: scientific data, research data, etc.
+  - rarely used by me
+
+- Use case for 'Infinity' to be stored in the database:
+  - ex: in scenarios where you need to store a value that is greater than the maximum value that can be stored in the data type
+  - ex if we are using real data type and if the value is greater than 3.4e38 then we can store it as 'Infinity'
