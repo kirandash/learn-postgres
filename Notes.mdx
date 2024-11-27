@@ -186,3 +186,32 @@
   - Note: `FLOAT(p) Syntax` where if p is 25-53, then it is internally mapped to double precision i.e.e 15 decimal digits precision
 
 ### 2.4 Compare speed of different data types
+
+### 2.5 Monetary Data Type - Money 🤑 (Not recommended)
+
+- https://www.postgresql.org/docs/current/datatype-money.html
+- DO NOT USE MONEY DATA TYPE 🚨
+  - It is not precise as it is only precise to 2 decimal places
+  - It is not recommended to use the money data type as it defaults to USD
+- lc_monetary
+  - The lc_monetary configuration parameter determines the currency symbol to be used by the to_char function when converting a money value to a string.
+  - ex: `SET lc_monetary TO 'en_US';`
+  - This only sets the currency symbol but does not automatically convert the number to the currency
+
+### 2.6 Solutions to store money? (Recommended)
+
+- store as integer (used by stripe and other similar companies)
+
+  - fastest and most efficient but slightly less accurate
+  - store as cents
+  - ex: 100 cents = 1 dollar
+  - ex: 10000 cents = 100 dollars
+
+- store as numeric
+
+  - precise and accurate
+  - store as dollars
+  - ex: 100.00 dollars
+
+- store currency identifier in a new column along with the amount
+  - ex: currency: USD, amount: 100.00
