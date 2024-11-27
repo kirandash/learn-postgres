@@ -278,3 +278,24 @@
   - Don't use CHAR data type
   - Use VARCHAR without bounds or TEXT. I mostly use TEXT because it is more readable and concise
   - If you are using VARCHAR with bounds, make sure the bounds are representative of the data to be stored ex: for title of a blog post you can use VARCHAR(255) but for a blog post content you can use TEXT. or for username you can use VARCHAR(50) etc.
+
+### 2.10 Check Constraint 🔥
+
+- This is a constraint that allows you to specify a condition that must be met before data can be inserted or updated in a table
+  - ex: `CHECK (age > 0)` or `CHECK (age BETWEEN 0 AND 100)` for age column which might be a SMALLINT data type which has a range of -32768 to +32767
+  - ex: `CHECK (length(title) <= 255)` for title column which might be a VARCHAR(255) data type
+- use `CONSTRAINT` keyword to define a check constraint
+  - ex: `CONSTRAINT age_must_be_positive CHECK (age > 0)`
+  - This will be helpful for other developers to understand the constraint and is good for logging and debugging
+- Note that the check constraint can be applied to a column or a table
+  - ex: `ALTER TABLE kirantest_example1 ADD CONSTRAINT age_must_be_positive CHECK (age > 0);`
+- Use table constraint if you want to apply the constraint to multiple columns (Good Practice but not mandatory. You can also apply the constraint to multiple columns using column constraint but it is not a good practice)
+  - ex: `CONSTRAINT fathers_age_must_be_gt_children_age CHECK (fathersAge > age)`
+- Check Constraints are very powerful and can be used to enforce business rules, data integrity, etc.
+  - Note that some developer might not like to put business logic in the database but it is a good practice to put some business logic in the database to enforce data integrity.
+- My Recommendation:
+  - Use check constraints to enforce data integrity and business rules
+  - Make sure the check constraint is representative of the data to be stored
+    - Ex: check constraint that define the data type bounds are good business rules to enforce
+    - Ex: business logic such as trigger that sends an email when a user is created is not a good business rule to enforce using check constraint in the database layer. And you should put this logic in the application layer
+  - Make sure the check constraint is simple and easy to understand
