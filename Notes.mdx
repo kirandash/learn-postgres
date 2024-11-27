@@ -248,3 +248,33 @@
 - My recommendation is to use `::` operator as it is more readable and concise
 - But if you are a developer who develops for multiple databases then you might want to use `cast` fn
 - `pg_column_size` is a function that returns the size of the argument in bytes
+
+### 2.9 Character Data Types - CHAR, VARCHAR, TEXT
+
+- Three types of character data types in Postgres:
+  - CHAR: Fixed length, padded with spaces
+    - ex: `CHAR(5)`: 'abc '
+    - DO NOT USE CHAR DATA TYPE 🚨
+      - Drawbacks:
+        - It is fixed length which means it will not allow you to store more than the specified length
+        - it is padded with spaces. The padding is something that you might not want.
+          - And it impacts a little bit on the storage because of the additional padded spaces.
+          - And it also impacts a little bit on the performance because now developers will have to trim the spaces before using the data
+          - Comparison of same text with different lengths might return false because of the padding
+        - It is not efficient as it uses the same storage as VARCHAR and CHAR is not better than VARCHAR
+      - How to store fixed length data?
+        - Use VARCHAR and add a check constraint to make sure the length is fixed
+  - VARCHAR (character varying): Variable length, no padding
+    - ex: `VARCHAR(5)`: 'abc' or `VARCHAR`: 'abc'
+    - VARCHAR without bounds is equivalent to TEXT
+  - TEXT: Variable length, no padding
+    - ex: `TEXT`: 'abc'
+- Note that the underlying data structure is the same for all three data types
+
+- If we save a large string in TEXT or VARCHAR without any constraint, postgres will use TOAST (The Oversized-Attribute Storage Technique) to store the large string
+  - TOAST is a mechanism that allows PostgreSQL to store large values in a separate area of the disk and only store a reference to the large value in the table
+  - TOAST is transparent to the user and is used to store large values in a more efficient way
+- My Recommendation:
+  - Don't use CHAR data type
+  - Use VARCHAR without bounds or TEXT. I mostly use TEXT because it is more readable and concise
+  - If you are using VARCHAR with bounds, make sure the bounds are representative of the data to be stored ex: for title of a blog post you can use VARCHAR(255) but for a blog post content you can use TEXT. or for username you can use VARCHAR(50) etc.
