@@ -75,7 +75,7 @@
   - Each database contains a `public` schema by default and can contain multiple schemas
   - each schema can contain multiple tables
 
-    <img src="./schema.png" alt="Schema Illustration" height="300" />
+    <img src="./assets/schema.png" alt="Schema Illustration" height="300" />
 
 - Comparison with SQLite:
   - You have a file and database
@@ -302,9 +302,52 @@
 
 -- DAY 3 --
 
-### 2.11 Domain Types
+### 2.11 Domain Types 🔥
 
 - https://www.postgresql.org/docs/current/domains.html
 - A domain is a user-defined data type that is based on another underlying type. Optionally, it can have constraints that restrict its valid values to a subset of what the underlying type would allow. Otherwise it behaves like the underlying type — for example, any operator or function that can be applied to the underlying type will work on the domain type. The underlying type can be any built-in or user-defined base type, enum type, array type, composite type, range type, or another domain.
 - Domain types can only be applied at column level and not at table level
   - while check constraints can be applied at column level or table level
+- Note that domain types and check constraints can be modified. When you do, it will only be applied to the new data that is inserted or updated. The existing data will not be validated against the new domain type or check constraint
+- Recommendation:
+  - Use domain type over check constraint for column level constraints
+    - because domain type is more readable and concise and reusable
+  - Use check constraint for table level constraints
+
+### 2.12 Charset/Encoding and collation
+
+- `\l` to list databases and their encoding and Collate
+  <img
+    src="./assets/encoding_collate.png"
+    alt="Encoding Collate Illustration"
+    height="300"
+  />
+- Encoding: The character set encoding used in the database
+  - ex: UTF8, LATIN1, etc.
+  - UTF8 is the most common encoding used as it supports a wide range of characters, emojis etc and is the default encoding in Postgres
+  - If data is not legal and not valid in the encoding then it will be stored as `?`
+- Collation: Collation defines a set of rules for comparing characters in a character set
+  - ex: en_US.UTF-8, en_IN.UTF-8, C etc.
+  - en_US.UTF-8 is the most common collation used as it is the default collation in Postgres
+  - Collation is used to sort and compare strings
+  - If you want to sort strings in a different language, you can use a different collation
+- Note that some of us might have C collation by default which is language-independent and is faster than other collations
+- Recommendation:
+  - Use UTF8 encoding and en_US.UTF-8 collation as it is the most common and widely used encoding and collation
+  - If you are building a multi-language application, you might want to use a different encoding and collation
+- There is also a client encoding which is the character set encoding used by the client application. If the client encoding is different from the database encoding, then client will convert the data to the client encoding before sending it to the database and vice versa
+
+  - to show the client encoding: `SHOW client_encoding;`
+  - ex: `SET client_encoding TO 'UTF8';`
+  - Recommendation: do not change the client encoding unless you have a good reason to do so because some data might be lost if the client encoding is changed
+
+- Ex of collation: `SELECT 'sourav' = 'SOURAV' COLLATE "en_US.UTF-8" AS result;`
+- We can create a custom collation that is case-insensitive. But note that we have better ways to do this without using Custom collation
+- Recommendation:
+  - Ideally I won't use custom collation because it is not needed in most cases 🚨
+  - ex: for case insensitive search,
+    - you can do it on client side
+    - or you can use `ILIKE` operator in Postgres. This is good but not index assisted
+    - you can create another column that stores the lowercase of the column and then you can search on that column.
+    - in future we will see generated columns and functional indexes which will help in this scenario ✅
+- Note that you also set custom collation for a specific column or a specific index
