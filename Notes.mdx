@@ -377,3 +377,21 @@
   - Use it when you want to compress large data and compare it with another data to do strict equality check. Use it with uuid so that the column size is the smallest ex: `SELECT md5('Kiran Kumar Dash')::uuid;`
   - Using md5 might cause security audit failure
   - use sha256 or bcrypt for secure data
+
+### 2.15 UUID data type
+
+- A UUID is written as a sequence of lower-case hexadecimal digits, in several groups separated by hyphens, specifically a group of 8 digits followed by three groups of 4 digits followed by a group of 12 digits, for a total of 32 digits representing the 128 bits. An example of a UUID in this standard form is: `a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11`
+- https://www.postgresql.org/docs/current/datatype-uuid.html
+- UUID as data type
+- UUID as primary key (to cover later)
+- UUID is much more compact and is faster to operate
+  - store uuids as UUID (16 bytes) than as text (40 bytes approx)
+- postgres can generate uuid `gen_random_uuid()`
+  - 🚨 This is not good for using as a primary key because it is not sequential and it is not good for indexing
+  - There are other ways to generate uuids that are sequential and are good for indexing
+    - uuidv1 till uuidv7
+    - For uuidv7: the first 8 bytes are the timestamp and the last 8 bytes are the random bytes
+      - ✅ Recommended: uuidv7 is not yet implemented in Postgres by default. But you can add extension to use it. Also you might find it on managed databases like RDS, Xata etc.
+- Recommended:
+  - Use UUID data type to store UUIDs because it's more compact and faster to operate
+  - Do not use TEXT data type to store UUIDs
