@@ -395,3 +395,13 @@
 - Recommended:
   - Use UUID data type to store UUIDs because it's more compact and faster to operate
   - Do not use TEXT data type to store UUIDs
+
+### 2.16 Boolean Data Type
+
+- True or False
+- Storage: 1 byte - super compact
+- Other databases actually don't have a boolean data type but they have a boolean which is an Integer data type beneath the hood
+- But for Postgres, it is a separate data type
+- Recommended:
+  - If you want to save true or false then use BOOLEAN data type
+  - Do not use INT data type to store true or false because SMALLINT uses 2 bytes while BOOLEAN uses 1 byte
