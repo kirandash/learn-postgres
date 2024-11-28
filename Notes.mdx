@@ -98,7 +98,7 @@
 - Table Schema Guidelines 🔥:
   - Make sure the schema is SMALL and not too big
   - Make sure the schema is SIMPLE
-  - Make sure the schema is REPRESNTATIVE OF THE DATA to be stored 🔥 (Very Important)
+  - Make sure the schema is REPRESENTATIVE OF THE DATA to be stored 🔥 (Very Important)
     - Postgres has a wide range of data types. As a developer you need to choose the right data type for the right data
     - Why it is important?
       - this is not just to save the data space because space is cheap
@@ -185,7 +185,7 @@
   - alias: float8
   - Note: `FLOAT(p) Syntax` where if p is 25-53, then it is internally mapped to double precision i.e.e 15 decimal digits precision
 
-### 2.4 Compare speed of different data types
+### 2.4 Compare speed of different data types 🔥
 
 ### 2.5 Monetary Data Type - Money 🤑 (Not recommended)
 
@@ -299,3 +299,12 @@
     - Ex: check constraint that define the data type bounds are good business rules to enforce
     - Ex: business logic such as trigger that sends an email when a user is created is not a good business rule to enforce using check constraint in the database layer. And you should put this logic in the application layer
   - Make sure the check constraint is simple and easy to understand
+
+-- DAY 3 --
+
+### 2.11 Domain Types
+
+- https://www.postgresql.org/docs/current/domains.html
+- A domain is a user-defined data type that is based on another underlying type. Optionally, it can have constraints that restrict its valid values to a subset of what the underlying type would allow. Otherwise it behaves like the underlying type — for example, any operator or function that can be applied to the underlying type will work on the domain type. The underlying type can be any built-in or user-defined base type, enum type, array type, composite type, range type, or another domain.
+- Domain types can only be applied at column level and not at table level
+  - while check constraints can be applied at column level or table level
