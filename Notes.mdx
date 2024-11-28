@@ -405,3 +405,44 @@
 - Recommended:
   - If you want to save true or false then use BOOLEAN data type
   - Do not use INT data type to store true or false because SMALLINT uses 2 bytes while BOOLEAN uses 1 byte
+
+### 2.17 Enums
+
+- for human it seems a string but for postgres it is an integer
+- Enums are a data type that allows you to create a set of predefined values that a column can take. It is a fixed set of values that a column can take
+- Enums are useful when you have a fixed set of values that a column can take
+- Recommended:
+  - Use ENUM data type to store a fixed set of values
+  - Do not use TEXT data type to store a fixed set of values
+  - Do not use ENUM data type to store a dynamic set of values
+- ORDER BY profile_status will order the column profile_status based on the order of the enum values and not based on the alphabetical order of the enum values
+  - This can be useful when you want to order the column based on the order of the enum values
+    - ex: grades: O, E, A, B, C, D, F
+- ```sql
+  DROP TYPE status;
+
+  CREATE TYPE status AS ENUM('on vacation', 'focusing', 'out sick', 'working from home');
+
+  ALTER TYPE status ADD VALUE 'working from office';
+
+  ALTER TYPE status ADD VALUE 'live streaming' before 'focusing';
+
+  ALTER TYPE status ADD VALUE 'hacking' after 'out sick';
+  ```
+
+- Deleting Enum can be tricky because if we remove one item from the enum we need to udpate the DB to remove the values from the column. See example file for more details
+
+- Enum ordering behind the scenes:
+
+  - `select * from pg_catalog.pg_enum;` to see the enums and you can see the `enumsortorder` column which shows the order of the enum values
+  - `select \* from pg_catalog.pg_enum where enumtypid = 17311 order by enumsortorder;`
+
+- enum_range function to get the range or the order of the enum values
+
+  - `select enum_range(null::gh_status2);`
+
+- Check Constraint vs Enum vs Integer:
+  - Enum uses less storage than check constraint
+  - Enum is more readable and concise than check constraint
+  - Check constraint with TEXT is more flexible than enum so use check constraint when you need more flexibility ex: changing the values of the enum more frequently
+  - You can also use an Integer for the enum values. It might not be readable but it is more compact than Enum
