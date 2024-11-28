@@ -351,3 +351,29 @@
     - you can create another column that stores the lowercase of the column and then you can search on that column.
     - in future we will see generated columns and functional indexes which will help in this scenario ✅
 - Note that you also set custom collation for a specific column or a specific index
+
+### 2.13 Binary Data types - BYTEA
+
+- Varying size column
+- can store up to 1 GB of data
+- when data is large postgres will use TOAST to store the data
+- Recommendation:
+
+  - Use BYTEA data type to store binary data. Or to save text data as binary data
+  - If you need to store files use a file storage system like S3, or otther S3 compatible service like R2, GCS, etc. and then use a CDN. Some managed databases like RDS, Xata etc store BYTEA data till 5 GB and then automatically move the data to S3. DO NOT USE BYTEA data type to store files in the database 🚨
+    - https://xata.io/
+    - https://aws.amazon.com/rds/
+    - If you do it on your own then if the file is deleted from the file storage system then the data in the database will be useless and we will have to handle the cleanup of the data in the database or the sync. But if you use a managed database then the managed database will take care of the cleanup and sync
+  - If file size is small then you can store it in the database but make sure you have a good reason to do so (Not recommended)
+
+- `SHOW bytea_output;` to show the bytea output - hex or escape, hex is the default. RECOMMENDED
+- `SET bytea_output TO 'escape';` to set the bytea output to escape - this is useful when you want to see the binary data in a more readable format but NOT RECOMMENDED as this might loose some data
+
+### 2.14 md5 hash function, sha256 hash function
+
+- md5: `SELECT md5('hello');` to get the md5 hash of the string
+  - DO NOT USE MD5 TO STORE SECURE DATA 🚨
+  - Super fast but not secure
+  - Use it when you want to compress large data and compare it with another data to do strict equality check. Use it with uuid so that the column size is the smallest ex: `SELECT md5('Kiran Kumar Dash')::uuid;`
+  - Using md5 might cause security audit failure
+  - use sha256 or bcrypt for secure data
