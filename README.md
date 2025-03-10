@@ -1,6 +1,6 @@
 <div align="center">
   
-  <h1>Mastering PostgreSQL: Build Lightning-Fast, optimized, Scalable Databases</h1>
+  <h1>Learn PostgreSQL: Build Lightning-Fast, optimized, Scalable Databases</h1>
 
 📚 Code for the Live stream tutorial series</span>
 
