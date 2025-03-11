@@ -613,3 +613,22 @@ CREATE SEQUENCE bank_tx_id
   - Always use `GENERATED ALWAYS` since it's more strict and will avoid accidental id update
   - Avoid using OVERRIDE SYSTEM VALUE
   - use DEFAULT if you have to pass id
+
+### 3.6 Composite types
+
+- This is a type that is a composition of multiple types
+- This is rarely used
+- Most of the times we use JSON or discrete columns
+- Ex:
+
+```
+CREATE TYPE blogpost as (
+	title text,
+	author text,
+	category text[],
+	tag text[],
+	excerpt text
+)
+```
+
+- It does not allow us to set constraints
