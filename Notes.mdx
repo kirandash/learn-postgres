@@ -360,7 +360,7 @@
 - Recommendation:
 
   - Use BYTEA data type to store binary data. Or to save text data as binary data
-  - If you need to store files use a file storage system like S3, or otther S3 compatible service like R2, GCS, etc. and then use a CDN. Some managed databases like RDS, Xata etc store BYTEA data till 5 GB and then automatically move the data to S3. DO NOT USE BYTEA data type to store files in the database 🚨
+  - If you need to store files use a file storage system like S3, or other S3 compatible service like R2, GCS, etc. and then use a CDN. Some managed databases like RDS, Xata etc store BYTEA data till 5 GB and then automatically move the data to S3. DO NOT USE BYTEA data type to store files in the database 🚨
     - https://xata.io/
     - https://aws.amazon.com/rds/
     - If you do it on your own then if the file is deleted from the file storage system then the data in the database will be useless and we will have to handle the cleanup of the data in the database or the sync. But if you use a managed database then the managed database will take care of the cleanup and sync
@@ -446,3 +446,33 @@
   - Enum is more readable and concise than check constraint
   - Check constraint with TEXT is more flexible than enum so use check constraint when you need more flexibility ex: changing the values of the enum more frequently
   - You can also use an Integer for the enum values. It might not be readable but it is more compact than Enum
+
+-- DAY 4 --
+
+### 2.18 Timestamps
+
+- https://www.postgresql.org/docs/current/datatype-datetime.html
+- Postgres allows us to save date time in two ways
+  - timestamp without timezone
+    - in this postgres will totally ignore the tz info
+    - `"timestamp" TIMESTAMP WITHOUT time zone` here ITHOUT time zone is by default
+  - timestamp with timezone (Recommended)
+    - In this postgres will convert it into utc and postgres will do the conversion when we pull the data
+    - `"timestamp" TIMESTAMP WITH time zone`
+    - `"timestamp2" timestamptz(6)` here the bound can be 0-6 which determines the fraction of seconds to be stored
+      - if no bound mentioned it will take 6 as default
+      - if bound is 0 it will round up the seconds
+      - to round down use `date_trunc('second', now())`
+- Inserting values in timestamp column?
+  - four formats: ISO, SQL, German and Postgres
+  - ISO 8601 (Recommended)
+    - ex: 2025-03-11T14:15:30Z, 2025-03-11T14:15:30+00, 2025-03-11T14:15:30+05:30 (India tz), 2025-03-11T14:15:30+08:00 (SG tz), 2025-03-11T09:45:00-07:00 (Pacific Daylight Time during daylight savings)
+    - Not ambiguous
+  - Ambiguous data: Other formats ex: 2025-03-11 is ambiguous and does not have tz info. postgres will save it. But we should AVOID IT!
+    - postgres will use the default ambiguity setting to define what is D M and Y. to see this setting use `show DATESTYLE;` which will show ex: `ISO, MDY`
+      - use `set DATESTYLE = 'ISO, DMY';` to change DATESTYLE
+  - Recommendation:
+    - Use ISO 8601
+    - DMY or MDY is fine
+  - There is another format called UNIX ex: 1741676088 which is 2025-03-11 14:54:48+08
+    - to convert unix or epoch time into timestamp use: `to_timestamp` fn
