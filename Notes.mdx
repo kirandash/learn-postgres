@@ -455,7 +455,7 @@
 - Postgres allows us to save date time in two ways
   - timestamp without timezone
     - in this postgres will totally ignore the tz info
-    - `"timestamp" TIMESTAMP WITHOUT time zone` here ITHOUT time zone is by default
+    - `"timestamp" TIMESTAMP WITHOUT time zone` here WITHOUT time zone is by default
   - timestamp with timezone (Recommended)
     - In this postgres will convert it into utc and postgres will do the conversion when we pull the data
     - `"timestamp" TIMESTAMP WITH time zone`
@@ -498,3 +498,20 @@
   - `ALTER DATABASE master_postgres_demo SET TIME ZONE 'UTC'` will apply timezone at a global level irrespective of sessions
   - you can also set time zone in the postgres config file. you can find the location at `show config_file`
   - show tz names: `SELECT * FROM pg_timezone_names WHERE name like '%Singapore';`
+
+### 2.20 Date and Time
+
+- Ideally if we want to save date and time together we use timestamp but in some use cases we might want to save date and time separately rather than together ex: birthday where tz is not important. and date and time can be stored separately.
+- Note: postgres has time and time_tz column
+  - but time_tz is not recommended because it can be confusing sometimes without the date
+  - if you need tz use timestamp instead and save date and time together
+- magic strings: DON'T USE THIS! calculate yesterday tomorrow etc based on today instead. Best practice!!!
+  - select 'yesterday'::TIMESTAMP;
+  - select 'tomorrow'::TIMESTAMP;
+  - select 'epoch'::TIMESTAMP;
+  - select 'infinity'::TIMESTAMP;
+  - select 'allballs'::time;
+- to find current date and time etc, use the following constants:
+  - `select CURRENT_DATE, CURRENT_TIMESTAMP, current_time;`
+  - `select LOCALTIME, LOCALTIMESTAMP;`
+  - AVOID `current_time` as it returns the tz info as well which is not useful without date. so use date or timestamp instead
