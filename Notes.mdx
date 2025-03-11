@@ -112,7 +112,7 @@
 - I am going to use TablePlus in this course
 - I will be using the free version of TablePlus
 
-## 2. Understanding Data Types:
+## 2. Fundamental Data Types:
 
 ### 2.1 Integer Data Types
 
@@ -515,3 +515,18 @@
   - `select CURRENT_DATE, CURRENT_TIMESTAMP, current_time;`
   - `select LOCALTIME, LOCALTIMESTAMP;`
   - AVOID `current_time` as it returns the tz info as well which is not useful without date. so use date or timestamp instead
+
+## 3 Diving into Advanced Data Types
+
+### 3.1 Arrays
+
+- Note that JSON already has Arrays (we will see that in future) but we have a dedicated data type for arrays in postgress
+- when to break data into separate columns or store them as array? My preference:
+  - if you have a list of data that are related then save them as array ex: storing temperature list for today's date should be stored as array
+  - if you have unrelated list of data then you can choose to save them separately in db columns.
+- Syntax:
+  - for create: `messagesReceived TEXT[], threadList TEXT[][],`
+  - for insert: `ARRAY[...]` or `{...}`
+  - `select temperatureForDate, temperatureForDate[0], temperatureForDate[1], temperatureForDate[2:3] , temperatureForDate[2:], temperatureForDate[1:] from arrays_demo;`
+    - Note that array data type in postgres is not zero indexed. it's 1 indexed
+    - you can use `[1:3]`, `[2:]` etc for slicing
