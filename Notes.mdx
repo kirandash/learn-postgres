@@ -633,10 +633,18 @@ CREATE TYPE blogpost as (
 
 - It does not allow us to set constraints
 
-### 3.7 NULL
+### 3.7 NULL constraint
 
 - Null is an unknown value. It is not empty.
 - Null is used to define constraint ex: `NOT NULL` which means not unknown
 - Recommendation ✅:
   - use NOT NULL by default unless we explicitly want something to be NULLABLE
   - it will help in many operations such as grouping, querying, indexing, sorting etc
+
+### 3.8 Unique constraint
+
+- this means the column is unique ex: PRIMARY KEY is unique. no need to set it explicitly
+  - other fields ex: email we can set explicitly as unique
+- `email NOT NULL TEXT UNIQUE,`
+- you can also define a combination of multiple columns as unique: ex: `UNIQUE(firstName, youtubeChannelName)`
+- constraint with constraint name for better error logging `username TEXT NOT NULL constraint must_be_unique UNIQUE`
