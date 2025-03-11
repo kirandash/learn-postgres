@@ -471,8 +471,30 @@
   - Ambiguous data: Other formats ex: 2025-03-11 is ambiguous and does not have tz info. postgres will save it. But we should AVOID IT!
     - postgres will use the default ambiguity setting to define what is D M and Y. to see this setting use `show DATESTYLE;` which will show ex: `ISO, MDY`
       - use `set DATESTYLE = 'ISO, DMY';` to change DATESTYLE
-  - Recommendation:
+  - Recommendation ✅:
     - Use ISO 8601
     - DMY or MDY is fine
   - There is another format called UNIX ex: 1741676088 which is 2025-03-11 14:54:48+08
     - to convert unix or epoch time into timestamp use: `to_timestamp` fn
+  - Note: you can use UNIX or ISO 8601 both are good but I highly recommend ISO because it's widely accepted standard
+
+### 2.19 Timezone
+
+- it's tricky because we have political reasons along with geographical reasons
+  - means we will have to take care of daylight saving time as well
+- Recommendation ✅:
+  - keep it in UTC in DB and only do the conversion when needed
+    - postgres will handle the conversion for us when we use UTC format
+  - use named timezone rather than using numbers for hours offset ex: +5:30
+    - because hours offset might be wrong in some cases. but named timezones are more accurate
+      - daylight saving
+      - sign
+        - `'2025-03-11 15:31:43'::timestamptz at time zone '-06:00'` is wrong for CST and '+06:00' is right and hence confusing. DON'T USE IT
+        - https://www.postgresql.org/docs/current/datetime-posix-timezone-specs.html#:~:text=The%20offset%20fields,must%20have%20two.
+        - It uses POSIX style which is the opposite of the ISO-8601 sign convention used elsewhere in PostgreSQL.
+- Commands:
+  - `show time zone;` to see time zone
+  - you can change it using `SET time zone 'Europe/Rome';'. This is per session and will be lost when reconnected and will reset to db tz
+  - `ALTER DATABASE master_postgres_demo SET TIME ZONE 'UTC'` will apply timezone at a global level irrespective of sessions
+  - you can also set time zone in the postgres config file. you can find the location at `show config_file`
+  - show tz names: `SELECT * FROM pg_timezone_names WHERE name like '%Singapore';`
