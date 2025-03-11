@@ -572,3 +572,24 @@ ALTER SEQUENCE serial_example_data_type OWNED BY serial_demo.id;
   - ex: bank tx ids.
   - sequences can start from any number and also allows us to insert any value at any point. which might be useful in bank txs to add custom prefix etc.
 - Note: you can use `RETURNING` with `INSERT INTO` to return back the values
+
+### 3.4 Sequence
+
+- we can create custom Sequences to build our own sequence
+- syntax:
+
+```
+CREATE SEQUENCE bank_tx_id
+	AS BIGINT
+	INCREMENT 1
+	START 30000
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	-- how many values should be cached before it goes and checks for the next update. by default cache is 1. and it's ok to leave with the default
+	CACHE 1;
+```
+
+- to increment use nextval fn: `SELECT nextval('bank_tx_id')`
+- currVal fn: `SELECT currval('bank_tx_id')` to return currval only in the current session. it will not give you accurate id if the value was updated somewhere else
+  - it only returns current value of the current transaction and not the global value
+- `setval` fn: to set the sequence to a specific value. Be careful as it breaks the sequence and starts again with a new starting point
