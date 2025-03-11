@@ -648,3 +648,14 @@ CREATE TYPE blogpost as (
 - `email NOT NULL TEXT UNIQUE,`
 - you can also define a combination of multiple columns as unique: ex: `UNIQUE(firstName, youtubeChannelName)`
 - constraint with constraint name for better error logging `username TEXT NOT NULL constraint must_be_unique UNIQUE`
+
+### 3.9 Exclusion constraint
+
+- it's similar to unique constraint but with some flexibility
+  - hence more powerful
+  - not often used but can be very useful in special use cases
+- use case: it helps you to exclude a new insertion based on a condition ex: `EXCLUDE USING GIST (employee_off_period WITH &&)` will cause new insertion to fail if the `employee_off_period` for two rows overlap
+- we can also use strict equality check with GIST but we will need an extension `btree_gist` for this to work
+  - ex: `EXCLUDE USING GIST (employee_id WITH =, employee_off_period WITH &&)`
+- we can also do partial exclusion using WHERE clause
+  - ex: `EXCLUDE USING GIST (employee_id WITH =, employee_off_period WITH &&) WHERE (approval_status != 'rejected')`
