@@ -539,3 +539,36 @@
   - `show intervalstyle;` to check the current format: this is only for display
     - allowed values: postgres (default), iso_8601
       - No preference: both should be fine
+
+### 3.3 Serial and BigSerial
+
+- It is not a real data type
+- It is an INTEGER data type under the hood (uses sequences) which is similar to INTEGER and with some additional features
+- Traditionally used to create PRIMARY KEY but not recommended anymore as we have better way to create PRIMARY KEYs and we will see soon
+- It is a good choice for PRIMARY KEY but not great
+-
+
+```
+CREATE TABLE serial_demo (
+	id SERIAL
+);
+```
+
+is equivalent to
+
+```
+CREATE SEQUENCE serial_example_data_type AS INTEGER;
+CREATE TABLE serial_demo (
+	id integer NOT NULL DEFAULT nextval('serial_example_data_type')
+);
+ALTER SEQUENCE serial_example_data_type OWNED BY serial_demo.id;
+```
+
+- Note: Use BIGSERIAL instead of SERIAL because we should not think about saving space for primary keys. as it is very much possible that we might run out of that space if our product becomes viral.
+
+- For sequence some times it might create a gap because it does nextval() update in a transaction which is good because it makes sure if we have two nextval() update request then only one is done in a transaction and the second one uses the next transaction and next id. so if current row id is at 10, if two users update at the same time. nextval() will not assign 11 for both but 11 for one and 12 for both. but for some reason if updating 11 fails and 12 is succesful then it will retry and the new id will be 13 creating a gap at 11.
+  - this is done intentionally to avoid duplicates
+- we can use SERIAL in other use cases where a sequence will be more useful
+  - ex: bank tx ids.
+  - sequences can start from any number and also allows us to insert any value at any point. which might be useful in bank txs to add custom prefix etc.
+- Note: you can use `RETURNING` with `INSERT INTO` to return back the values
