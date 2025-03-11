@@ -632,3 +632,11 @@ CREATE TYPE blogpost as (
 ```
 
 - It does not allow us to set constraints
+
+### 3.7 NULL
+
+- Null is an unknown value. It is not empty.
+- Null is used to define constraint ex: `NOT NULL` which means not unknown
+- Recommendation ✅:
+  - use NOT NULL by default unless we explicitly want something to be NULLABLE
+  - it will help in many operations such as grouping, querying, indexing, sorting etc
