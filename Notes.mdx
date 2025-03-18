@@ -740,3 +740,23 @@ CREATE TYPE blogpost as (
   - for fn in Gen col - we can not use volatile or random fns viz `uuid()` etc. the fn must be deterministic
   - we can only reference current row but not other row or other table ex: generate country code based on current ph number in current row. we can not use any other row
   - we can not reference another generated columns using a gen col
+
+### 3.14 Text search data type - TSVECTOR
+
+- Vanilla postgres covers a lots of text search requirements hence it is really powerful as we don't need additional third party extensions like [typesense](https://typesense.org/), [elastic search](https://www.elastic.co/elasticsearch), [meilisearch](https://www.meilisearch.com/) etc.
+
+  - Some advanced text search like: faceted search etc will still need additional extensions
+  - some managed db service may offer services to extend postgres to do this as well
+
+- We will cover fundamental data types that will help with text search later
+
+  - tsvector:
+    - `to_tsvector` will create a sorted distinct list of lexemes
+    - `to_tsquery` will help us query a lexeme
+  - the search has a little bit of fuzziness
+
+- Syntax:
+
+  - `SELECT to_tsvector('kiran dash is an awesome full stack developer who is also an awesome human being') @@ to_tsquery('kiran');`
+
+- Other languages are also supported ex: `SELECT to_tsvector('russian', 'Я люблю есть яблоки и бананы.');`
