@@ -775,3 +775,20 @@ CREATE TYPE blogpost as (
   - `B'1001'` or `'1001'::BIT(4)`
   - `SELECT B'1001' & B'0001';` will give a result to determine which bits are enanbled or not when we are comparing bit with a bit mask
   - `bit(6)` or `bit varying(32)`
+
+### 3.16 Ranges
+
+- It is a meta type but not a data type
+  - Each data type has their own sub range ex: integer range, numeric range, date range and so on
+- It has lower and upper bound. we can mention if the bounds are inclusive or exclusive
+- we can also check if ranges overlap
+  - use case ex: checking if date range overlaps for employee requesting time off. (covered in exclusion constraint)
+- Types:
+  - INT4RANGE, NUMRANGE, DATERANGE, TSRANGE
+- Syntax:
+  - `'[100,200]'::int4range`
+  - `int4range(100,200, '(]')`: Preferred
+- We can use operators '@>' and '&&' to check if a value is included in a range or overlaps with a range respectively.
+  - '_': `int4range(18,65, '[)') _ int4range(30,50, '(]')` to find intersection
+- To find the bounds programmatically use `upper` and `upper_inc`, `lower` and `lower_inc`,
+  - `SELECT UPPER(int4range(18,65,'[)')), UPPER_INC(int4range(18,65,'[)'));`
