@@ -899,3 +899,27 @@ CREATE TYPE blogpost as (
 
 - When working with `GROUP`:
   - it also runs in parallel index scan
+
+### 04.07 indexing selectivity
+
+- we need to look at our data as well to decide whether the column is a good candidate for indexing? we should look at two factors from our data:
+  - **cardinality**
+    - number of distinct values in a column
+    - ex: if column has boolean true/false with a million rows then indexing this boolean won't be helpful
+  - **selectivity**
+    - total ratio of disctinct values in a column
+    - range: between 0 to 1.
+    - it is better if the value is closer to 1
+- Note: Don't entirely rely on selectivity to decide the candidacy but also examine the query to see if it should be indexed or not
+
+  - ex: `SELECT (COUNT(*) FILTER(WHERE is_premium is true)::decimal / count(*)::decimal)::decimal(15,13) from indexing_demo_users; -- 0.1995060000000` here adding is_premium to index will help
+
+- Let's focus on the second bound example:
+
+  ```
+  explain SELECT * FROM indexing_demo_users where birthdate > '1982-08-26';
+  ```
+
+  - here second bound or > does not use bitmap index scan but runs a sequence scan
+  - this is happening because of indexing selectivity
+  - becauase in this case the total number of count returned by the query is too high and postgres decides not to go through the index DS but goes straight to the table even if we have an indexed column
