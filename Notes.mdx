@@ -701,3 +701,25 @@ CREATE TYPE blogpost as (
   - macaddr (6 byte)
   - macaddr8 (8 byte)
   - rarely used but if there is a use case then use this over text
+
+### 3.12 JSON
+
+- Using JSON in relational databases might not be something that all developers will like
+  - but postgres provides a way for you to store your JSON object and use is similar to dbs like mongo
+  - Recommendation: I have done both and I like JSON as it makes working with JSON easier
+- Tips: to query anything from JSON document, the key to query from should be a top level column
+  - that way it's much more performant
+- While updating JSON - you can update the entire blob or use JSON patching to patch a specific value
+- Size in JSON?
+  - You can store massive JSON objects upto 1GB for text and up to 256MB for jsonb. But it is definitely not recommended to store large objects since it might impact performance. Make sure to break down your json into smaller objects and split them into 4-5 jsons to save separately
+- json and jsonb
+  - json uses less space compared to jsonb but use jsonb
+  - json data type saves the json data as plain text but jsonb is bigger because jsonb makes sure your data is deconstructed and parsed from JSON and saves the json info as binary with some additional info for the postgres to query and do other operations on it in a performant way
+  - json will save the white space but jsonb will not
+  - json will not remove duplicates and not follow standard json guidelines but jsonb will remove duplicates
+  - json will ask for valid JSON but will not follow all the JSON rules strictly wherease jsonb is more strict
+- JSON has lots of operations which we will cover later
+  - ex: `'::jsonb->'version'`
+  - ex: Nested access: `'::jsonb->'scripts'->>'build'` double arrow removes the double quote
+- Recommendation:
+  - Always use JSONB unless you have specific requirement where you want to save JSON as text or if your JSON is not following strict guidelines
