@@ -760,3 +760,18 @@ CREATE TYPE blogpost as (
   - `SELECT to_tsvector('kiran dash is an awesome full stack developer who is also an awesome human being') @@ to_tsquery('kiran');`
 
 - Other languages are also supported ex: `SELECT to_tsvector('russian', 'Я люблю есть яблоки и бананы.');`
+
+### 3.15 Bit String data type (Bit)
+
+- strings of bits(1s and 0s)
+  - not meaningful to human eyes hence might not be useful for all use cases
+  - might be useful in some usecases
+    - ex: storing multiple true false booleans together especially when you have a large number of boolean values. let's say 85 boolean values to be stored. it might be difficult to create 85 boolean columns but using a bit string will be better.
+      - ex: feature flags with lots of features is a great use case
+    - if total booleans to be stored are less then use separate columns rather than bit
+  - alternate: you can store value as integer and do bit-wise operation
+    - efficient but not very readable since final number is an integer. My personal preference is: bit string over integer with bit-wise operation
+- syntax:
+  - `B'1001'` or `'1001'::BIT(4)`
+  - `SELECT B'1001' & B'0001';` will give a result to determine which bits are enanbled or not when we are comparing bit with a bit mask
+  - `bit(6)` or `bit varying(32)`
