@@ -660,7 +660,7 @@ CREATE TYPE blogpost as (
 - we can also do partial exclusion using WHERE clause
   - ex: `EXCLUDE USING GIST (employee_id WITH =, employee_off_period WITH &&) WHERE (approval_status != 'rejected')`
 
-### 3.10 Foreign Key Constraints
+### 3.10 Foreign Key Constraints 🔥
 
 - Foreign key and Foreign Key constraints are different
   - a foreign key constraint enforces a referential integrity
@@ -702,7 +702,7 @@ CREATE TYPE blogpost as (
   - macaddr8 (8 byte)
   - rarely used but if there is a use case then use this over text
 
-### 3.12 JSON
+### 3.12 JSON and jsonb 🔥
 
 - Using JSON in relational databases might not be something that all developers will like
   - but postgres provides a way for you to store your JSON object and use is similar to dbs like mongo
@@ -723,3 +723,20 @@ CREATE TYPE blogpost as (
   - ex: Nested access: `'::jsonb->'scripts'->>'build'` double arrow removes the double quote
 - Recommendation:
   - Always use JSONB unless you have specific requirement where you want to save JSON as text or if your JSON is not following strict guidelines
+
+### 3.13 Generated Columns 🔥
+
+- One of the most popular data type to tidy up existing messy data model or messy data
+  - It's very useful escape hatch especially when we want to modify existing data model which are not beautiful or nice
+- Traditionally there are two types: virtual and stored. Postgres only has stored
+  - Virtual: the data is always computed at runtime, so acts like a query macro. It won't be saved in DB.
+  - Stored: the data is computed at INSERT/UPDATE and is actually stored in DB
+- Syntax:
+  - `age_months numeric GENERATED ALWAYS AS (age_years * 12) STORED`
+- `GENERATED ALWAYS` will automatically generate data based on data from another column
+- More use cases:
+  - storing country code or email domain etc automatically so that we can query based on it later
+- Limits/Restrictions:
+  - for fn in Gen col - we can not use volatile or random fns viz `uuid()` etc. the fn must be deterministic
+  - we can only reference current row but not other row or other table ex: generate country code based on current ph number in current row. we can not use any other row
+  - we can not reference another generated columns using a gen col
