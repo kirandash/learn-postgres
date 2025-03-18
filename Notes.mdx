@@ -795,7 +795,7 @@ CREATE TYPE blogpost as (
 
 ## 4 Fundamentals Indexing
 
-### 4.1 What is indexes and why is it important?
+### 4.1 What is indexes and why is it important? (Theory)
 
 - Why learn indexes?
   - Indexes are the best way to make your DB performant! That's why it is important to create indexes properly.
@@ -811,7 +811,7 @@ CREATE TYPE blogpost as (
     - in other db index contain a pointer to the primary key of the row
     - in postgres index contain a pointer back to the table rather than the row to the primary key
 
-### 4.2 Heaps and CTIDs
+### 4.2 Heaps and CTIDs (Theory)
 
 - Index contains a pointer to the table. Let's understand how this works in depth
 - How posgres is arranged behind the scenes?
@@ -821,3 +821,81 @@ CREATE TYPE blogpost as (
 - CTID:
   - `SELECT *, ctid FROM unique_demo;`
 - index DS contains a `ctid` which acts as a pointer to the table.
+
+### 4.3 B-Tree (Theory)
+
+- Most common index type
+- provides really fast performance for common examples like: strict equality check, range etc
+- indexes for name will be a B-Tree with all the names sorted at the bottom level or the leaf nodes. The name that we have indexed lives at the leaf nodes and also the ctid lives at the leaf nodes.
+- without indexing we have to do a bruteforce "table scan" through the table which is linear
+  - this might be slow when you have millions or billions of rows
+  - O(n)
+- B-Tree helps finding the value faster because now the search is not linear but O(log(n)) since we only have to traverse through a tree
+
+### 4.4 Primary key vs secondary indexes (Theory)
+
+- In Postgres, every index is a secondary index
+- In MySQL when we declare a primary key we simultaneusly declare a clustered index
+  - in mysql everything is an index. even the table is a b-tree index
+  - everything else which is not clustered index is a secondary index in MySQL
+- In Postgres there is no clustered index hence every index other than the primary key is a secondary index
+  - A primary key is a special secondary index with few additional props such as: NOT NULL UNIQUE and also automatically create index for you
+  - each table can have only one primary key
+  - every other index is secondary index
+
+### 4.5 Primary Key types (Theory)
+
+- what data type should we use for primary key?
+  - integer vs uuid
+    - 90% usecase: BIGINT ✅
+      - Not INT because we don't want to worry about saving space when working with primary key. If product goes viral. We should make sure we have enough space to save the primary keys
+    - rest: maybe uuid or ulid based on usecase requirement
+      - why not uuid or ulid?
+        - uuid has around 7 variations and we will have to make decision which one to use
+        - INSERTION IN RANDOM ORDER: uuids are random hence new rows will be inserted at random places while Integers will be inserted in order and will keep a balanced structure for the b-tree
+          - This is even more penalized in MySQL where table is ordered by ID. In postgres the order is not important but sitll there is a penalty during insertion at random positions
+          - Solution: the new `uuidv7` are ordered by time where the first few bytes are dedicated to time and we have auto increments
+            - we must make sure our postgres version supports uuidv7
+        - uuid size is bigger which can be controlled by uuid(size)
+      - why uuid or ulid?
+        - this can be generated without checking the existing db
+        - usecase: when we want to do optimistic update in client and want to assign a uuid or ulid instantly
+- Note: Issue with integer?
+  - since integer is auto incrementing. exposing this might lead to security concerns as users will know how many ids are there
+  - to fix this: don't expose primary key to public but create another secondary id using a compact package like `nanoid` and expose that to the public instead
+  - resources: https://en.wikipedia.org/wiki/Insecure_direct_object_reference
+  - fun read: https://eieio.games/blog/writing-down-every-uuid/
+
+### 4.6 Where and how to add index?
+
+- Building a great schema is more scientific
+  - because we can decide the schema structure based on the data types
+- But creating better index is more real time or artistic approach which should come with experience
+  - we should decide on where and how to add index based on the kind of query we plan to make
+  - we should decide smartly on which should be added as index as adding too many index might make our DB slow
+- Rule of thumb: anything that is after `WHERE` clause
+
+  - also consider `ORDER`, `GROUP`, `SELECT` etc
+  - DO NOT TAKE THIS AS FINAL! We must analyze the query in detail and decide about the index.
+
+- `explain SELECT * FROM indexing_demo_users where birthdate = '1982-08-26'` will explain how the scanning is done
+  - the above code will do a sequence scan on the table indexing_demo_users
+  - postgres here is doing a parallel sequence scan and dedicating two workers for the scan
+- create index:
+
+  ```
+  CREATE INDEX bdate on indexing_demo_users using btree(birthdate);
+
+  explain SELECT * FROM indexing_demo_users where birthdate = '1982-08-26';
+  ```
+
+  - this code should do a bit map index scan on bdate indexes
+
+- When working with `ORDER`:
+
+  - if we use indexing then only index scan is run
+  - if we don't use indexing then it runs sorting first and then it runs parallel seq scan
+  - Pattern: ✅ If the data column needs some sort of sorting ex: sort by created_at then it might be smart to put an index on that column
+
+- When working with `GROUP`:
+  - it also runs in parallel index scan
