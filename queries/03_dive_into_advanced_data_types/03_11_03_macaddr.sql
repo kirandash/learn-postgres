@@ -1,0 +1,1 @@
+SELECT '08-00-2b-01-02-03'::macaddr8, pg_column_size('08-00-2b-01-02-03'::text), pg_column_size('08-00-2b-01-02-03'::macaddr8), pg_column_size('08-00-2b-01-02-03'::macaddr);

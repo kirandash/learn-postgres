@@ -23,4 +23,4 @@ SELECT * FROM foreign_key_example_users;
 SELECT * FROM foreign_key_example_orders;
 
 -- The following DELETE will be restricted because we have on delete restrict on the fk constraint
-DELETE FROM foreign_key_example_users;
+DELETE FROM foreign_key_example_users; 

@@ -680,3 +680,24 @@ CREATE TYPE blogpost as (
 - Recommendation:
   - ✅ Use default on delete no action or restrict
   - while using cascade make sure to evaluate all the child it will delete
+
+### 3.11 N/w and mac addresses (INET, CIDR, MacAddresses)
+
+- not frequently used but not that rare as well. some projects might wanna save host address in DB
+- instead of using text let's see efficient solutions
+- INET
+
+  - Why INET over TEXT?
+
+    - because it uses less space
+      - `SELECT pg_column_size('2001:db8::ff00:42:8329'::text), pg_column_size('2001:db8::ff00:42:8329'::inet);`: 26, 22
+    - dedicated operations that can be performed on INET data type using built in fns
+
+  - https://www.postgresql.org/docs/current/datatype-net-types.html
+
+- CIDR
+  - Mainly for networks and ranges
+- MacAddress
+  - macaddr (6 byte)
+  - macaddr8 (8 byte)
+  - rarely used but if there is a use case then use this over text
