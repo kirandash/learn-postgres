@@ -659,3 +659,24 @@ CREATE TYPE blogpost as (
   - ex: `EXCLUDE USING GIST (employee_id WITH =, employee_off_period WITH &&)`
 - we can also do partial exclusion using WHERE clause
   - ex: `EXCLUDE USING GIST (employee_id WITH =, employee_off_period WITH &&) WHERE (approval_status != 'rejected')`
+
+### 3.10 Foreign Key Constraints
+
+- Foreign key and Foreign Key constraints are different
+  - a foreign key constraint enforces a referential integrity
+    - This is something that exists in real time and if the constraint is not met it will stop everything
+  - a foreign key is a pointer to another table
+    - This is more of philosophical
+- Syntax:
+  - `user_id BIGINT REFERENCES foreign_key_example_users(id)`
+    - Note: currently we are using column level constraint. We can also use table level constraint. And we can create a composite foreign key as well where two columns will combine to create a foreign key
+  - Composite foreign key constraint:
+    - `FOREIGN KEY (user_id, user_username) REFERENCES foreign_key_example_users(id, username)` and `CONSTRAINT unique_id_username UNIQUE (id, username)` in the parent table
+  - on delete actions:
+    - `on delete no action`: default
+    - `on delete restrict`: this will work normally for regular fk constraint bt for composite constraints we must mention the columns as NOT NULL
+    - `on delete cascade`: this will allow deleting data from the parent table
+      - cascade is useful but can be dangerous when there is multi level cascading.
+- Recommendation:
+  - ✅ Use default on delete no action or restrict
+  - while using cascade make sure to evaluate all the child it will delete
