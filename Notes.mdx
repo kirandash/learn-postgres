@@ -792,3 +792,32 @@ CREATE TYPE blogpost as (
   - '_': `int4range(18,65, '[)') _ int4range(30,50, '(]')` to find intersection
 - To find the bounds programmatically use `upper` and `upper_inc`, `lower` and `lower_inc`,
   - `SELECT UPPER(int4range(18,65,'[)')), UPPER_INC(int4range(18,65,'[)'));`
+
+## 4 Fundamentals Indexing
+
+### 4.1 What is indexes and why is it important?
+
+- Why learn indexes?
+  - Indexes are the best way to make your DB performant! That's why it is important to create indexes properly.
+  - We will see patterns and frameworks that will help us decide how to create index in production projects
+- What are indexes?
+  - It is a discrete separate DS from a table
+    - Most common format is a B-Tree
+    - Some other structures are GiST etc. we will see in future
+  - When a table is created an index DS is also created.
+  - When we put an index on a column (username) from the table ex: users table with cols: id, firstname, lastname, username, address, dob etc then postgres will copy all the usernames from table into the index in a way that it is easier to find username from indexes rather than looking through the users table
+  - Note: 🚨 DON'T CREATE indexes for everything! This will slow your Database. Because every time the table is updated it will also have to update the index DS. So the update mutation will become slower if we have too many indexes.
+  - Each index contains a pointer to the row in the main table. So we can find the rest of the info if needed.
+    - in other db index contain a pointer to the primary key of the row
+    - in postgres index contain a pointer back to the table rather than the row to the primary key
+
+### 4.2 Heaps and CTIDs
+
+- Index contains a pointer to the table. Let's understand how this works in depth
+- How posgres is arranged behind the scenes?
+  - Under the hood postgres contains a bunch of pages and each page has rows
+  - this page and rows are arranged as "Heaps"
+    - This makes sure the insertion and removal is fast in Postgres
+- CTID:
+  - `SELECT *, ctid FROM unique_demo;`
+- index DS contains a `ctid` which acts as a pointer to the table.
